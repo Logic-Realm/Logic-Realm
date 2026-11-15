@@ -98,6 +98,7 @@ $metadata = '
   <meta name="twitter:title" content="' . $escape($title) . '">
   <meta name="twitter:description" content="' . $escape($description) . '">
   <meta name="twitter:image" content="' . $escape($imageUrl) . '">';
+$metadata = str_replace('\\n', "\n", $metadata);
 
 if ($structuredData !== null) {
     $json = json_encode(
