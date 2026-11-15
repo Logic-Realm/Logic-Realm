@@ -92,10 +92,14 @@ const AppLandingPage = () => {
     return (
         <div className="app-landing-page">
             <SEO
-                name={`${appDetails?.name} - ${appDetails?.sdesc} | Logic Realm`}
-                oname={`${appDetails?.name} - ${appDetails?.sdesc} by Logic Realm`}
+                name={appDetails?.name
+                    ? `${appDetails.name} - ${appDetails.sdesc || 'Software'} | Logic Realm`
+                    : 'Software Details | Logic Realm'}
+                oname={appDetails?.name
+                    ? `${appDetails.name} by Logic Realm`
+                    : 'Explore Software by Logic Realm'}
                 route={`/softwares/${slug}`}
-                description={appDetails?.sdesc}
+                description={appDetails?.sdesc || 'Explore software products developed by Logic Realm.'}
                 image={`/seo/${slug}_page.png`}
                 key={slug}
             />
