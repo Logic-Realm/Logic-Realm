@@ -1,39 +1,46 @@
 import { Helmet } from 'react-helmet-async';
 
+const SITE_URL = "https://logicrealm.rf.gd";
+
 const SEO = ({
-    name = "",
+    name = "Logic Realm - Modern Web & Mobile Software Solutions",
     oname = "",
-    description = "Custom software development, modern web & mobile solution.",
-    route = "",
+    description = "Logic Realm designs and develops web applications, mobile apps, and custom software solutions.",
+    route = "/",
     type = "website",
     image = "/seo/home_page.png",
     noindex = false,
 }) => {
-    const title = name ? name : "Logic Realm";
-    const ogTitle = oname ? oname : title;
-    const url = `https://logicrealm.rf.gd${route}`;
+    const title = name || "Logic Realm";
+    const ogTitle = oname || title;
+    const canonicalUrl = `${SITE_URL}${route.startsWith("/") ? route : `/${route}`}`;
+    const imageUrl = /^https?:\/\//i.test(image)
+        ? image
+        : `${SITE_URL}${image.startsWith("/") ? image : `/${image}`}`;
 
     return (
         <Helmet>
             <title>{title}</title>
             <meta name="description" content={description} />
-            {!noindex && <link rel="canonical" href={url} />}
-
-            <meta property='og:type' content={type} />
-            {!noindex && <meta property='og:url' content={url} />}
-            <meta property='og:title' content={ogTitle} />
-            <meta property='og:description' content={description} />
-            <meta property="og:image" content={image} />
-
-            <meta name='twitter:card' content='summary_large_image' />
-            {!noindex && <meta name='twitter:url' content={url} />}
-            <meta name='twitter:title' content={ogTitle} />
-            <meta name='twitter:description' content={description} />
-            <meta name="twitter:image" content={image} />
-
+            {!noindex && <link rel="canonical" href={canonicalUrl} />}
             {noindex && <meta name="robots" content="noindex,nofollow" />}
-        </Helmet>
-    )
-}
 
-export default SEO
+            <meta property="og:site_name" content="Logic Realm" />
+            <meta property="og:locale" content="en_US" />
+            <meta property="og:type" content={type} />
+            {!noindex && <meta property="og:url" content={canonicalUrl} />}
+            <meta property="og:title" content={ogTitle} />
+            <meta property="og:description" content={description} />
+            <meta property="og:image" content={imageUrl} />
+            <meta property="og:image:alt" content={ogTitle} />
+
+            <meta name="twitter:card" content="summary_large_image" />
+            {!noindex && <meta name="twitter:url" content={canonicalUrl} />}
+            <meta name="twitter:title" content={ogTitle} />
+            <meta name="twitter:description" content={description} />
+            <meta name="twitter:image" content={imageUrl} />
+        </Helmet>
+    );
+};
+
+export default SEO;
