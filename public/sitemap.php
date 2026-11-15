@@ -34,22 +34,24 @@ if ($result) {
             'priority' => '0.8',
         ];
     }
+} else {
+    error_log('Logic Realm sitemap: unable to retrieve software slugs.');
 }
 
-$xml = new XMLWriter();
-$xml->openMemory();
-$xml->startDocument('1.0', 'UTF-8');
-$xml->startElement('urlset');
-$xml->writeAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
+$xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+$xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
 
 foreach ($urls as $url) {
-    $xml->startElement('url');
-    $xml->writeElement('loc', $url['loc']);
-    $xml->writeElement('changefreq', $url['changefreq']);
-    $xml->writeElement('priority', $url['priority']);
-    $xml->endElement();
+    $loc = htmlspecialchars($url['loc'], ENT_XML1 | ENT_COMPAT, 'UTF-8');
+    $changefreq = htmlspecialchars($url['changefreq'], ENT_XML1 | ENT_COMPAT, 'UTF-8');
+    $priority = htmlspecialchars($url['priority'], ENT_XML1 | ENT_COMPAT, 'UTF-8');
+
+    $xml .= "  <url>\n";
+    $xml .= "    <loc>{$loc}</loc>\n";
+    $xml .= "    <changefreq>{$changefreq}</changefreq>\n";
+    $xml .= "    <priority>{$priority}</priority>\n";
+    $xml .= "  </url>\n";
 }
 
-$xml->endElement();
-$xml->endDocument();
-echo $xml->outputMemory();
+$xml .= '</urlset>';
+echo $xml;
