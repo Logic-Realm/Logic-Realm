@@ -71,10 +71,20 @@ if ($html === false) {
 }
 
 $htmlTitle = '<title>' . $escape($title) . '</title>';
-$html = preg_replace('/<title>.*?<\/title>/is', $htmlTitle, $html, 1);
+$html = preg_replace_callback(
+    '/<title>.*?<\/title>/is',
+    static function () use ($htmlTitle) { return $htmlTitle; },
+    $html,
+    1
+);
 
 $descriptionTag = '<meta name="description" content="' . $escape($description) . '">';
-$html = preg_replace('/<meta\s+name=["\']description["\'][^>]*>/i', $descriptionTag, $html, 1);
+$html = preg_replace_callback(
+    '/<meta\s+name=["\']description["\'][^>]*>/i',
+    static function () use ($descriptionTag) { return $descriptionTag; },
+    $html,
+    1
+);
 
 $metadata = '
   <link rel="canonical" href="' . $escape($canonical) . '">
@@ -100,6 +110,11 @@ if ($structuredData !== null) {
     }
 }
 
-$html = preg_replace('/<\/head>/i', $metadata . "\n</head>", $html, 1);
+$html = preg_replace_callback(
+    '/<\/head>/i',
+    static function () use ($metadata) { return $metadata . "\n</head>"; },
+    $html,
+    1
+);
 header('Content-Type: text/html; charset=UTF-8');
 echo $html;
