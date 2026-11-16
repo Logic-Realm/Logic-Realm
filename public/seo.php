@@ -20,6 +20,31 @@ $result = $stmt->get_result();
 $app = $result ? $result->fetch_assoc() : null;
 $stmt->close();
 
+// A missing slug must be a real HTTP 404, not the React application shell.
+// This prevents nonexistent software URLs from rendering as valid product pages.
+if (!is_array($app)) {
+    http_response_code(404);
+    header('Content-Type: text/html; charset=UTF-8');
+    header('X-Robots-Tag: noindex, follow');
+    echo '<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,follow">
+  <title>Software Not Found | Logic Realm</title>
+</head>
+<body>
+  <main>
+    <h1>Software Not Found</h1>
+    <p>The software you are looking for does not exist or may have been removed.</p>
+    <p><a href="/">Return to Logic Realm</a> · <a href="/softwares">Browse software</a></p>
+  </main>
+</body>
+</html>';
+    exit;
+}
+
 $baseUrl = 'https://logicrealm.rf.gd';
 $canonical = $baseUrl . '/softwares/' . rawurlencode($slug);
 $found = is_array($app);
