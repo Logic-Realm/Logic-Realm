@@ -78,7 +78,7 @@ $html = preg_replace_callback(
     1
 );
 
-$descriptionTag = '<meta name="description" content="' . $escape($description) . '">';
+$descriptionTag = '<meta name="description" content="' . $escape($description) . '" data-rh="true">';
 $html = preg_replace_callback(
     '/<meta\s+name=["\']description["\'][^>]*>/i',
     static function () use ($descriptionTag) { return $descriptionTag; },
