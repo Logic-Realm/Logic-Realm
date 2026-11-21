@@ -2,18 +2,25 @@
 RewriteEngine On
 RewriteBase /
 
-# Force HTTPS (only if SSL available)
+# Force HTTPS (only if SSL is available)
 RewriteCond %{HTTPS} off
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 
-# Allow direct access to the API folder (very important)
+# Allow direct access to the API folder
 RewriteCond %{REQUEST_URI} ^/api/
 RewriteRule ^ - [L]
+
+# Serve a database-generated sitemap at the stable sitemap.xml URL
+RewriteRule ^sitemap\.xml$ sitemap.php [L]
+
+# Send software detail URLs through PHP so crawlers receive product metadata
+# before the React application hydrates.
+RewriteRule ^softwares/([A-Za-z0-9-]+)/?$ seo.php?slug=$1 [L,QSA]
 
 # Allow direct access to existing files and folders
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 
-# Route all other requests to index.html (for SPA)
+# Route all remaining requests to the React SPA
 RewriteRule ^ index.html [L]

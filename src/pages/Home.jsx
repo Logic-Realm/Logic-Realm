@@ -24,6 +24,7 @@ const Home = () => {
       <SEO
         route='/'
         name='Logic Realm - Modern Web & Mobile Software Solutions'
+        description='Logic Realm designs and develops modern web applications, mobile apps, and custom software solutions for businesses and digital products.'
       />
       <section className="hero">
         <div className="hero-content">

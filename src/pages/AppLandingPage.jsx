@@ -12,6 +12,7 @@ import { useEffect, useState, Suspense, lazy } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import Header from '../component/LandingPage/Header/Header.jsx';
 import Download from '../component/LandingPage/Download/Download.jsx';
+import ErrorPage from './404.jsx';
 // import Screenshots from '../component/LandingPage/SS/Screenshots.jsx';
 import Description from '../component/LandingPage/Description/Description.jsx';
 
@@ -39,63 +40,101 @@ const itemVariants = {
 
 const AppLandingPage = () => {
     const { slug } = useParams();
-    const [loading, setLoading] = useState(false);
-    const [appDetails, setAppDetails] = useState({});
-
-    const getAppData = async (currentSlug) => {
-        if (!currentSlug) return null;
-
-        try {
-            let url = `${API_BASE_URL}api/routes/getAppDetails.php`
-            let response = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ slug: currentSlug })
-            });
-            let data = await response.json();
-
-            if (data && data.response_data) {
-                setAppDetails(data.response_data);
-                if (typeof window !== 'undefined') {
-                    const existing = JSON.parse(localStorage.getItem("allSoftwares") || "{}");
-                    existing[currentSlug] = data.response_data;
-                    localStorage.setItem("allSoftwares", JSON.stringify(existing));
-                }
-            } else {
-                console.warn('No response_data for slug:', currentSlug, data);
-            }
-        } catch (err) {
-            console.error('Failed to fetch app details:', err);
-        } finally {
-            setLoading(false);
-        }
-    }
+    const [loading, setLoading] = useState(true);
+    const [appDetails, setAppDetails] = useState(null);
+    const [notFound, setNotFound] = useState(false);
 
     useEffect(() => {
-        setLoading(true);
-        try {
-            const raw = typeof window !== 'undefined' ? localStorage.getItem("allSoftwares") : null;
-            const allSoftwares = raw ? JSON.parse(raw) : {};
-            if (allSoftwares && allSoftwares[slug]) {
-                setAppDetails(allSoftwares[slug]);
-                setLoading(false);
+        let isActive = true;
+
+        const getAppData = async () => {
+            setLoading(true);
+            setNotFound(false);
+            setAppDetails(null);
+
+            try {
+                const response = await fetch(`${API_BASE_URL}api/routes/getAppDetails.php`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ slug })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Request failed with status ${response.status}`);
+                }
+
+                const data = await response.json();
+                const app = data?.response_data;
+
+                if (!app || typeof app !== 'object' || Array.isArray(app) || Number(data?.response_code) !== 200) {
+                    if (isActive) {
+                        setNotFound(true);
+                        setLoading(false);
+                    }
+                    return;
+                }
+
+                if (isActive) {
+                    setAppDetails(app);
+                    setLoading(false);
+
+                    try {
+                        const existing = JSON.parse(localStorage.getItem("allSoftwares") || "{}");
+                        existing[slug] = app;
+                        localStorage.setItem("allSoftwares", JSON.stringify(existing));
+                    } catch (cacheError) {
+                        console.warn('Could not cache software details:', cacheError);
+                    }
+                }
+            } catch (err) {
+                console.error('Failed to fetch app details:', err);
+                if (isActive) {
+                    setLoading(false);
+                }
             }
-        } catch (err) {
-            console.error('Failed to read cache, fetching from API:', err);
-        } finally {
-            getAppData(slug);
-        }
+        };
+
+        getAppData();
+
+        return () => {
+            isActive = false;
+        };
     }, [slug]);
+
+    if (notFound) {
+        return <ErrorPage />;
+    }
+
+    if (loading) {
+        return (
+            <div className="app-landing-page">
+                <CircularProgress />
+            </div>
+        );
+    }
+
+    if (!appDetails) {
+        return (
+            <div className="app-landing-page">
+                <SEO
+                    name="Unable to Load Software | Logic Realm"
+                    description="Software details could not be loaded. Please try again."
+                    noindex={true}
+                />
+                <p role="alert">Unable to load this software right now. Please try again later.</p>
+            </div>
+        );
+    }
 
     return (
         <div className="app-landing-page">
             <SEO
-                name={`${appDetails?.name} - ${appDetails?.sdesc} | Logic Realm`}
-                oname={`${appDetails?.name} - ${appDetails?.sdesc} by Logic Realm`}
+                name={`${appDetails.name} - ${appDetails.sdesc || 'Software'} | Logic Realm`}
+                oname={`${appDetails.name} by Logic Realm`}
                 route={`/softwares/${slug}`}
-                description={appDetails?.sdesc}
+                description={appDetails.sdesc || 'Explore software products developed by Logic Realm.'}
                 image={`/seo/${slug}_page.png`}
                 key={slug}
             />
@@ -114,56 +153,54 @@ const AppLandingPage = () => {
                 </IconButton>
             </Link>
 
-            {loading ? <CircularProgress /> :
-                <Motion.div
-                    className='app-landing-container'
-                    variants={containerVariants}
-                    initial="hidden"
-                    whileInView="visible"
-                >
-                    <Header
-                        img={appDetails.img}
-                        name={appDetails.name}
-                        desc={appDetails.sdesc}
-                        variants={itemVariants}
-                    />
-                    <div className="app-landing-grid">
-                        <div className="aplan-con">
-                            <Description
-                                descP={appDetails.descP}
-                                descS={appDetails.descS}
-                                features={appDetails.features}
-                                steps={appDetails.steps}
-                                variants={itemVariants}
-                            />
-                            {/* <Screenshots /> */}
-                        </div>
-                        <div className="aplan-con-2">
-                            <Download
-                                platforms={appDetails.platforms}
-                                dlink={appDetails.dlink}
-                                vers={appDetails.vers}
-                                github={appDetails.github}
-                                variants={itemVariants}
-                            />
-                            <Info
-                                size={appDetails.size}
-                                platforms={appDetails.platforms}
-                                category={appDetails.category}
-                                variants={itemVariants}
-                            />
-                        </div>
+            <Motion.div
+                className='app-landing-container'
+                variants={containerVariants}
+                initial="hidden"
+                whileInView="visible"
+            >
+                <Header
+                    img={appDetails.img}
+                    name={appDetails.name}
+                    desc={appDetails.sdesc}
+                    variants={itemVariants}
+                />
+                <div className="app-landing-grid">
+                    <div className="aplan-con">
+                        <Description
+                            descP={appDetails.descP}
+                            descS={appDetails.descS}
+                            features={appDetails.features}
+                            steps={appDetails.steps}
+                            variants={itemVariants}
+                        />
+                        {/* <Screenshots /> */}
                     </div>
-                    <Suspense
-                        fallback={
-                            <Box sx={{ width: '100%', height: '1rem', marginTop: '2rem' }}>
-                                <LinearProgress color='info' style={{ height: '0.75rem' }} />
-                            </Box>
-                        }>
-                        <SimilarApps slug={slug} />
-                    </Suspense>
-                </Motion.div>
-            }
+                    <div className="aplan-con-2">
+                        <Download
+                            platforms={appDetails.platforms}
+                            dlink={appDetails.dlink}
+                            vers={appDetails.vers}
+                            github={appDetails.github}
+                            variants={itemVariants}
+                        />
+                        <Info
+                            size={appDetails.size}
+                            platforms={appDetails.platforms}
+                            category={appDetails.category}
+                            variants={itemVariants}
+                        />
+                    </div>
+                </div>
+                <Suspense
+                    fallback={
+                        <Box sx={{ width: '100%', height: '1rem', marginTop: '2rem' }}>
+                            <LinearProgress color='info' style={{ height: '0.75rem' }} />
+                        </Box>
+                    }>
+                    <SimilarApps slug={slug} />
+                </Suspense>
+            </Motion.div>
         </div>
     )
 }

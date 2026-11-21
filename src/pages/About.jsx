@@ -1,6 +1,7 @@
 import './css/About.css';
 import SEO from '../component/SEO/SEO.jsx';
 import { motion as Motion } from 'motion/react';
+import PairProgramming from '../assets/undraw_pair-programming_9jyg.svg';
 import ScrollCard from '../component/ScrollCard/ScrollCard.jsx';
 
 const UsersIcon = (props) => (
@@ -68,9 +69,9 @@ export default function About() {
     return (
         <div className="about-page">
             <SEO
-                name="About Us - Logic Realm"
-                oname='About Logic Realm - Our Mission & Vision'
-                description="Learn more about Logic Realm, our journey, values, and commitment to delivering innovative digital solutions that empower businesses worldwide."
+                name="About Logic Realm - Our Approach to Software"
+                oname="About Logic Realm"
+                description="Discover Logic Realm, an emerging software initiative focused on building useful digital products and thoughtful software solutions."
                 route="/about"
                 image="/seo/about_page.png"
             />
@@ -81,8 +82,8 @@ export default function About() {
                     initial="hidden"
                     animate="visible"
                 >
-                    <Motion.h1 variants={fadeInUp}>Crafting the Future of <span>Digital Solutions</span>.</Motion.h1>
-                    <Motion.p variants={fadeInUp}>At Logic Realm, we don't just build software. We architect ecosystems that empower businesses to thrive in a digital-first world.</Motion.p>
+                    <Motion.h1 variants={fadeInUp}>Building with <span>Purpose</span>.</Motion.h1>
+                    <Motion.p variants={fadeInUp}>Logic Realm is an emerging software initiative focused on crafting intelligent, efficient, and scalable software solutions that empower innovation and reliability.</Motion.p>
                 </Motion.div>
             </section>
 
@@ -96,9 +97,9 @@ export default function About() {
                             viewport={{ amount: 0.5 }}
                             transition={{ duration: 0.8 }}
                         >
-                            <h2>Our Journey</h2>
-                            <p>Founded in a small garage with a big idea, Logic Realm began as a quest to simplify the complexities of the digital landscape. We saw a world where technology was often a barrier, not an enabler. Our mission was to change that.</p>
-                            <p>Through years of dedication, countless lines of code, and a relentless focus on our clients' success, we've grown into a trusted partner for businesses worldwide. Our story is written in the success of our clients and the innovative solutions we've built together.</p>
+                            <h2>What We're Building</h2>
+                            <p>Logic Realm is at an early stage. We're building its foundations, developing digital products, and shaping a clear approach to creating useful software.</p>
+                            <p>Our focus is on solving practical problems through thoughtful engineering, reliable experiences, and purposeful design. We don't claim a long history or a record we haven't earned. Instead, we're focused on learning, improving, and making each release better than the last.</p>
                         </Motion.div>
                         <Motion.div
                             className="ab-relative"
@@ -106,12 +107,11 @@ export default function About() {
                             initial="hidden"
                             whileInView="visible"
                         >
-                            <img src="https://placehold.co/600x400/718e80/FFFFFF?text=Innovation+Hub" alt="Logic Realm's modern office" />
-                            <div className="ab-absolute"></div>
+                            <img src={PairProgramming} alt="Two people collaborating on software development" loading="lazy" />
                         </Motion.div>
                     </div>
                 </div>
-            </section >
+            </section>
 
             <section className="value-section">
                 <div className="value-container">
@@ -120,7 +120,7 @@ export default function About() {
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3 }}
                     >
-                        The Core of Our Culture
+                        Principles Behind the Work
                     </Motion.h2>
                     <Motion.p
                         initial={{
@@ -133,59 +133,48 @@ export default function About() {
                         }}
                         transition={{ delay: 0.4 }}
                     >
-                        These are the principles that guide our decisions, our collaborations, and our commitment to excellence.
+                        The principles guiding how Logic Realm approaches products, decisions, and future growth.
                     </Motion.p>
                     <div className="values-grid">
                         <ValueCard
                             icon={<ZapIcon className="w-8 h-8" />}
-                            title="Innovate Fearlessly"
-                            description="We constantly push boundaries and embrace change to stay ahead of the curve."
+                            title="Purposeful Innovation"
+                            description="Explore new ideas when they make a product more useful, capable, or reliable."
                             direction="left"
                         />
                         <ValueCard
                             icon={<UsersIcon className="w-8 h-8" />}
-                            title="Customer-Centric"
-                            description="Our clients are our partners. Their success is the ultimate measure of our own."
+                            title="People First"
+                            description="Keep real user needs at the centre of product decisions and experiences."
                             direction="left"
                         />
                         <ValueCard
                             icon={<GemIcon className="w-8 h-8" />}
-                            title="Uncompromising Quality"
-                            description="We are obsessed with quality, from the first line of code to the final user interaction."
+                            title="Quality Matters"
+                            description="Pay attention to the details that make software dependable, clear, and enjoyable to use."
                             direction="left"
                         />
                         <ValueCard
                             icon={<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" /><path d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12z" /></svg>}
-                            title="Radical Transparency"
-                            description="Open communication and honesty are the cornerstones of our relationships."
+                            title="Transparency"
+                            description="Communicate clearly and represent products, capabilities, and progress honestly."
                             direction="right"
                         />
                         <ValueCard
                             icon={<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="8.5" cy="7" r="4" /><line x1="20" y1="8" x2="20" y2="14" /><line x1="23" y1="11" x2="17" y2="11" /></svg>}
-                            title="Empowered Ownership"
-                            description="Every team member takes initiative and responsibility for our collective goals."
+                            title="Ownership"
+                            description="Take responsibility for decisions, details, and the quality of every release."
                             direction="right"
                         />
                         <ValueCard
                             icon={<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" /></svg>}
-                            title="Collective Growth"
-                            description="We learn, grow, and succeed as one team, celebrating both individual and group wins."
+                            title="Continuous Learning"
+                            description="Treat every challenge, release, and piece of feedback as an opportunity to improve."
                             direction="right"
                         />
                     </div>
                 </div>
             </section>
-
-            {/* <section className="ct-section">
-                <div className="ct-container">
-                    <h2>Ready to Build the Future?</h2>
-                    <p>We are always looking for passionate and talented individuals to join our journey. If you're driven by innovation and thrive on challenge, we'd love to hear from you.</p>
-                    <div style={{ marginTop: '2rem' }}>
-                        <a href="#" className="ct-button">Explore Careers</a>
-                    </div>
-                </div>
-            </section> */}
-
-        </div >
+        </div>
     );
 }
