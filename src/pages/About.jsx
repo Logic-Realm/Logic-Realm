@@ -1,8 +1,8 @@
 import './css/About.css';
 import SEO from '../component/SEO/SEO.jsx';
 import { motion as Motion } from 'motion/react';
-import ScrollCard from '../component/ScrollCard/ScrollCard.jsx';
-import SoftDev from '../assets/hero-software-dev.svg';
+import { useReducedMotion } from 'motion/react';
+import PairProgramming from '../assets/undraw_pair-programming_9jyg.svg';
 
 const UsersIcon = (props) => (
     <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -27,17 +27,32 @@ const GemIcon = (props) => (
     </svg>
 );
 
-const ValueCard = ({ icon, title, description, direction }) => (
-    <ScrollCard className="values-card" direction={direction} scroll={0.4}>
-        <div className="icon-wrapper">
-            {icon}
-        </div>
-        <div>
-            <h3>{title}</h3>
-            <p>{description}</p>
-        </div>
-    </ScrollCard>
-);
+const ValueCard = ({ icon, title, description, index }) => {
+    const shouldReduceMotion = useReducedMotion();
+
+    return (
+        <Motion.div
+            className="values-card"
+            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{
+                duration: shouldReduceMotion ? 0 : 0.4,
+                delay: shouldReduceMotion ? 0 : index * 0.06,
+                ease: "easeOut"
+            }}
+            whileHover={shouldReduceMotion ? undefined : { y: -3 }}
+        >
+            <div className="icon-wrapper">
+                {icon}
+            </div>
+            <div>
+                <h3>{title}</h3>
+                <p>{description}</p>
+            </div>
+        </Motion.div>
+    );
+};
 
 const fadeInUp = {
     hidden: { opacity: 0, y: 30 },
@@ -107,8 +122,7 @@ export default function About() {
                             initial="hidden"
                             whileInView="visible"
                         >
-                            <img src={SoftDev} alt="Illustration representing software development at Logic Realm" loading="lazy" />
-                            <div className="ab-absolute"></div>
+                            <img src={PairProgramming} alt="Two people collaborating on software development" loading="lazy" />
                         </Motion.div>
                     </div>
                 </div>
@@ -141,37 +155,37 @@ export default function About() {
                             icon={<ZapIcon className="w-8 h-8" />}
                             title="Purposeful Innovation"
                             description="Explore new ideas when they make a product more useful, capable, or reliable."
-                            direction="left"
+                            index={0}
                         />
                         <ValueCard
                             icon={<UsersIcon className="w-8 h-8" />}
                             title="People First"
                             description="Keep real user needs at the centre of product decisions and experiences."
-                            direction="left"
+                            index={1}
                         />
                         <ValueCard
                             icon={<GemIcon className="w-8 h-8" />}
                             title="Quality Matters"
                             description="Pay attention to the details that make software dependable, clear, and enjoyable to use."
-                            direction="left"
+                            index={2}
                         />
                         <ValueCard
                             icon={<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" /><path d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12z" /></svg>}
                             title="Transparency"
                             description="Communicate clearly and represent products, capabilities, and progress honestly."
-                            direction="right"
+                            index={3}
                         />
                         <ValueCard
                             icon={<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="8.5" cy="7" r="4" /><line x1="20" y1="8" x2="20" y2="14" /><line x1="23" y1="11" x2="17" y2="11" /></svg>}
                             title="Ownership"
                             description="Take responsibility for decisions, details, and the quality of every release."
-                            direction="right"
+                            index={4}
                         />
                         <ValueCard
                             icon={<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" /></svg>}
                             title="Continuous Learning"
                             description="Treat every challenge, release, and piece of feedback as an opportunity to improve."
-                            direction="right"
+                            index={5}
                         />
                     </div>
                 </div>
